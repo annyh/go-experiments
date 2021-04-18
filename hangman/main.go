@@ -100,8 +100,7 @@ func main() {
 		keys := reflect.ValueOf(m).MapKeys()
 		fmt.Println("Your guesses:", keys)
 
-		printUnderlineWord(word, m)
-		fmt.Println()
+		fmt.Println(printUnderlineWord(word, m))
 
 		_, ok = w[input]
 		if ok {
@@ -134,15 +133,17 @@ func isValidInput(input string) bool {
 	return true
 }
 
-func printUnderlineWord(word string, m map[string]bool) {
+func printUnderlineWord(word string, m map[string]bool) string {
+	str := ""
 	for _, c := range word {
 		_, ok := m[string(c)]
 		s := string(c)
 		if ok == false {
 			s = "_"
 		}
-		fmt.Print(s + " ")
+		str += (s + " ")
 	}
+	return str
 }
 
 func getWordMap(word string) map[string]int32 {
