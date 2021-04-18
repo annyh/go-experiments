@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// TODO: read from file instead of instanting variable repeatedly
 func getPic(index int) string {
 	HANGMANPICS := []string{`
 +---+
@@ -65,7 +66,9 @@ func getPic(index int) string {
 }
 
 func getRandomWord() string {
-	words := []string{"hello", "world"}
+	words := []string{
+		"ant", "baboon", "badger", "bat", "bear", "beaver", "camel", "cat", "clam", "cobra", "cougar", "coyote", "crow", "deer", "dog", "donkey", "duck", "eagle", "ferret", "fox", "frog", "goat", "goose", "hawk", "lion", "lizard", "llama", "mole", "monkey", "moose", "mouse", "mule", "newt", "otter", "owl", "panda", "parrot", "pigeon", "python", "rabbit", "ram", "rat", "raven", "rhino", "salmon", "seal", "shark", "sheep", "skunk", "sloth", "snake", "spider", "stork", "swan", "tiger", "toad", "trout", "turkey", "turtle", "weasel", "whale", "wolf", "wombat", "zebra",
+	}
 	randomIndex := rand.Intn(len(words))
 	pick := words[randomIndex]
 	return pick
@@ -105,7 +108,7 @@ func main() {
 			fmt.Println(input + " is in the word.")
 			remaining -= int(w[input])
 			if remaining == 0 {
-				fmt.Println("You won.")
+				fmt.Println("YOU WON.")
 				break
 			} else {
 				fmt.Println(strconv.Itoa(remaining) + " characters remaining")
