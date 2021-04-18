@@ -8,4 +8,11 @@ Run with
 
 Run tests
 
-`go test hangman_test.go main.go`
+`go test`
+
+Generate HTML coverage report
+
+```bash
+go test -cover -coverprofile=c.out
+go tool cover -html=c.out -o coverage.html 
+```
