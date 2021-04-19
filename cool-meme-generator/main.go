@@ -45,7 +45,7 @@ func main() {
 
 	if *list {
 		fmt.Println("Available memes:")
-		for k, _ := range memes {
+		for k := range memes {
 			fmt.Println(k)
 		}
 		os.Exit(0)
@@ -56,35 +56,44 @@ func main() {
 	if len(args) > 0 {
 		path = args[0]
 	}
+	flagset := make(map[string]bool)
+	flag.Visit(func(f *flag.Flag) { flagset[f.Name] = true })
 
-	img := DownloadTemplate(memes[*meme])
-	r := img.Bounds()
-	w := r.Dx()
-	h := r.Dy()
+	if flagset["meme"] {
+		fmt.Printf("meme set via flags\n")
+		img := DownloadTemplate(memes[*meme])
+		r := img.Bounds()
+		w := r.Dx()
+		h := r.Dy()
 
-	m := gg.NewContext(w, h)
-	m.DrawImage(img, 0, 0)
-	m.LoadFontFace("./Impact.ttf", fontSize)
+		m := gg.NewContext(w, h)
+		m.DrawImage(img, 0, 0)
+		m.LoadFontFace("./Impact.ttf", fontSize)
 
-	// Apply black stroke
-	m.SetHexColor("#000")
-	strokeSize := 6
-	for dy := -strokeSize; dy <= strokeSize; dy++ {
-		for dx := -strokeSize; dx <= strokeSize; dx++ {
-			// give it rounded corners
-			if dx*dx+dy*dy >= strokeSize*strokeSize {
-				continue
+		// Apply black stroke
+		m.SetHexColor("#000")
+		strokeSize := 6
+		for dy := -strokeSize; dy <= strokeSize; dy++ {
+			for dx := -strokeSize; dx <= strokeSize; dx++ {
+				// give it rounded corners
+				if dx*dx+dy*dy >= strokeSize*strokeSize {
+					continue
+				}
+				x := float64(w/2 + dx)
+				y := float64(h - fontSize + dy)
+				m.DrawStringAnchored(*text, x, y, 0.5, 0.5)
 			}
-			x := float64(w/2 + dx)
-			y := float64(h - fontSize + dy)
-			m.DrawStringAnchored(*text, x, y, 0.5, 0.5)
 		}
+
+		// Apply white fill
+		m.SetHexColor("#FFF")
+		m.DrawStringAnchored(*text, float64(w)/2, float64(h)-fontSize, 0.5, 0.5)
+		m.SavePNG(path)
+
+		fmt.Printf("Saved to %s\n", path)
+	} else {
+		fmt.Printf("meme not explicitly set, run all\n")
 	}
+	fmt.Println(path)
 
-	// Apply white fill
-	m.SetHexColor("#FFF")
-	m.DrawStringAnchored(*text, float64(w)/2, float64(h)-fontSize, 0.5, 0.5)
-	m.SavePNG(path)
-
-	fmt.Printf("Saved to %s\n", path)
 }
